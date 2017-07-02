@@ -12,7 +12,7 @@ metadata = dict(
     __version__="1.2",
     __license__="MIT License",
     __author__=u"Nick Yefremov <e_n_k@list.ru>",
-    __url__="",
+    __url__="https://github.com/NickF40/VkSpyProject/",
     __summary__="Software Metadata for Humans",
     __keywords__="Python / 3.5.2, OS independent, software development"
 )
