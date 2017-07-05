@@ -1,13 +1,21 @@
 import json
 import logging
+import like-a-s
 import time
 import urllib.parse as parse
 import urllib.request as urllib
-
+import postgresql as pg
 import vk
+db = pg.open(name='postgres', host='localhost', user='postgres', password='', port='')      # your data here
+def add_activity(mon, day):
+    mon_day = ''.join([str(mon), str(day)])
+    return db.prepare("INSERT INTO '%s'(start_time, finish_time, task, priority, frequency) VALUES ( $1, $2, $3, $4, $5)" % mon_day)
+def get_activities(mon, day):
+    mon_day = ''.join([str(mon), str(day)])
+    return db.prepare('SELECT * FROM %s' % mon_dayn)
 
 metadata = dict(
-    __name__="Vk Friends Spy module",
+    __name__="Vk self-bot module",
     __version__="1.2",
     __license__="MIT License",
     __author__=u"Nick Yefremov <e_n_k@list.ru>",
@@ -15,6 +23,9 @@ metadata = dict(
     __summary__="Software Metadata for Humans",
     __keywords__="Python / 3.5.2, OS independent, software development"
 )
+
+ban_list = 
+
 
 globals().update(metadata)
 
@@ -38,11 +49,20 @@ request_url = 'https://api.vk.com/method/'
 messages_get_method = 'messages.get'
 mark_as_read_method = 'messages.markAsRead'
 send_message_method = 'messages.send'
+get_friends_method = 'friends.get'
 get_user_method = 'users.get'
 
 
 DAY = 86400
 
+good_list = [
+    87070490,946041, 2873028,
+    9344219, 14760190, 19375989,
+    26570113, 41053069, 106909773,
+    111166636, 121702873, 138731510,
+    144258940,165580957, 225193884,
+    225328940, 379805606, 426541359
+    ]
 
 # messages
 default_msg = "Здравствуйте, к сожалению, а не могу ответить на ваше сообщение," \
@@ -77,7 +97,14 @@ get_messages_request = request_url + messages_get_method \
                        + '&preview_length=' + preview_length \
                        + '&last_message_id=' + last_message_id \
                        + ac_tkn + access_token
-
+                        
+                        
+get_friends_request = request_url + get_friends_method \
+                          + '?user_id=' + my_id \
+                          + '&order=hints' \
+                          + '&fields=online,last_seen' \
+                          + ac_tkn + access_token
+    
 
 def get_today():
     t = time.time()
@@ -136,6 +163,10 @@ def get_name(user_id):
 def handle_other(message):
     pass
 
+def get_friends():
+    encrypted_data = urllib.urlopen(get_friends_request).read().decode()
+    data = json.loads(encrypted_data).get('response')
+    return [user.get('uid') for user in data if 'deactivated' not in user.keys()]
 
 def check_messages():
     data = urllib.urlopen(get_messages_request)
@@ -156,7 +187,9 @@ def check_messages():
                     try:
                         mon = int(data[0])
                         day = int(data[1])
-
+                    act = get_activities(mon, day)()
+                    
+                    
                     except Exception as e:
                         print(e)
                         handle_other(text)
