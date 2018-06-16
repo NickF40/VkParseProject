@@ -1,3 +1,11 @@
+"""
+Simple friend's online state logger
+VK version:    5.78
+Connection type: Implicit Flow
+"""
+
+
+
 import json
 import logging
 import os
@@ -5,7 +13,7 @@ import time
 import urllib.request as urllib
 import zipfile
 
-import vk
+# import vk
 
 metadata = dict(
     __name__="Vk Friends Spy module",
@@ -21,7 +29,7 @@ globals().update(metadata)
 
 __all__ = metadata.keys()
 
-logfile = ''  # 'logs.log', for example
+logfile = 'logs.log'  # 'logs.log', for example
 logging.basicConfig(format=u'%(asctime)s | %(message)s',
                     level=logging.CRITICAL, filename=logfile)  # edit log's filename if needed
 
@@ -32,11 +40,11 @@ password = ''  # Password for this login
 my_id = ''  # VK id here
 
 # open session
-session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password)
-api = vk.API(session=session)
+# session = vk.AuthSession(app_id=app_id, user_login=login, user_password=password)
+# api = vk.API(session=session)
 
 # Our lovely offline access token (no exact IP required)
-access_token = 'e4d4d64bf45e2fe82f5190309fd1f927fe15210654ece48f5a0c9dd509866784a191b0b0e7803b0389047'
+access_token = ''
 
 # some string constants
 request_url = 'https://api.vk.com/method/'
@@ -55,9 +63,9 @@ def get_friends():
                           + '?user_id=' + my_id \
                           + '&order=hints' \
                           + '&fields=online,last_seen' \
-                          + ac_tkn + access_token
+                          + ac_tkn + access_token + '&v=5.78'
     encrypted_data = urllib.urlopen(get_friends_request).read().decode()
-    data = json.loads(encrypted_data).get('response')
+    data = json.loads(encrypted_data).get('response').get('items')
     for user in data:
         if 'deactivated' in user.keys():
             continue
