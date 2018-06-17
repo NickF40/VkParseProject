@@ -1,11 +1,3 @@
-"""
-Simple friend's online state logger
-VK version:    5.78
-Connection type: Implicit Flow
-"""
-
-
-
 import json
 import logging
 import os
@@ -14,7 +6,8 @@ import urllib.request as urllib
 import zipfile
 
 # import vk
-
+import pdb
+pdb.set_trace()
 metadata = dict(
     __name__="Vk Friends Spy module",
     __version__="1.2",
@@ -34,7 +27,7 @@ logging.basicConfig(format=u'%(asctime)s | %(message)s',
                     level=logging.CRITICAL, filename=logfile)  # edit log's filename if needed
 
 #               Put your
-app_id = ''  # app id here
+app_id = '6607466'  # app id here
 login = ''  # VK's login
 password = ''  # Password for this login
 my_id = ''  # VK id here
